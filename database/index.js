@@ -1,7 +1,9 @@
 import mongoose from "mongoose"
-import { db } from "../config.js"
+import dotenv from 'dotenv'
 
-const dbURI = `mongodb://${db.user}:${db.password}@${db.host}:${db.port}/${db.name}`
+dotenv.config()
+
+const dbURI = process.env.MONGODB_URI
 
 mongoose
   .connect(dbURI)
