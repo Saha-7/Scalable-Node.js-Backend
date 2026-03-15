@@ -1,6 +1,6 @@
 import User from "../models/userModel.js"
 import asyncHandler from "express-async-handler"
-import generateToken from "../src/utils/generateToken.js"
+import generateToken from "../utils/generateToken.js"
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
