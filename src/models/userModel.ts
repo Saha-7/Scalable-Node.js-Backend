@@ -1,7 +1,18 @@
-import mongoose, { Schema } from "mongoose"
-import bcrypt from "bcryptjs"
+import mongoose, { Schema, Document, Model } from "mongoose"
+import bcrypt from "bcrypt"
 
-const userSchema = new Schema(
+export interface UserDoc extends Document{
+  name? : string,
+  email? : string,
+  password? : string,
+  matchPassword? : (enteredPassword : string) => Promise<boolean>
+}
+
+export interface UserModel extends Model<UserDoc>{
+  matchPassword? : (enteredPassword : string) => Promise<boolean>
+}
+
+const userSchema = new Schema<UserDoc>(
   {
     name: {
       type: String,
@@ -22,7 +33,7 @@ const userSchema = new Schema(
   }
 )
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
@@ -32,7 +43,7 @@ userSchema.pre("save", async function (next) {
   }
 
   const salt = await bcrypt.genSalt(10)
-  this.password = await bcrypt.hash(this.password, salt)
+  if (this.password) this.password = await bcrypt.hash(this.password, salt)
 })
 
 const User = mongoose.model("User", userSchema)
