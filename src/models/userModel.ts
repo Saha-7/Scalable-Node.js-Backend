@@ -8,6 +8,9 @@ export interface UserDoc extends Document{
   matchPassword? : (enteredPassword : string) => Promise<boolean>
 }
 
+export const DOCUMENT_NAME = "User"
+export const COLLECTION_NAME = "users"
+
 export interface UserModel extends Model<UserDoc>{
   matchPassword? : (enteredPassword : string) => Promise<boolean>
 }
@@ -46,6 +49,6 @@ userSchema.pre("save", async function (next) {
   if (this.password) this.password = await bcrypt.hash(this.password, salt)
 })
 
-const User = mongoose.model("User", userSchema)
+const User:Model<UserDoc> = mongoose.model<UserDoc, UserModel>("User", userSchema)
 
 export default User
